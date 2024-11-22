@@ -51,7 +51,7 @@ def count_words(word_counts: dict, words):
     return most_common_words
 
 
-def create_hist(most_common_words):
+def create_hist(most_common_words, file):
     graph = Pyasciigraph(
     line_length=120,
     min_graph_length=50,
@@ -65,9 +65,10 @@ def create_hist(most_common_words):
 
     pattern = [Gre, Yel, Red, Yel, Bla, Blu, Gre, Yel, Red, Yel]
     data = vcolor(most_common_words, pattern[:len(most_common_words)])
-
-    for line in graph.graph('Lovely graph', data):
+    
+    for line in graph.graph(file, data):
         print(line)
+
 
 
 rich.traceback.install()
@@ -75,14 +76,15 @@ rich.get_console().clear()
 rich.get_console().rule(":raccoon: :raccoon: :raccoon: Hello Everyone! :raccoon: :raccoon: :raccoon:", style="bold magenta")
 
 parser = argparse.ArgumentParser(description="Analysis of words number")
-parser.add_argument('--file', '-f', type=str, nargs='+', help="Path to file.")
+parser.add_argument('--file', '-f', type=str, nargs='+', help="Path to file.", required = True)
 parser.add_argument('--max', '-m', type=int, default=10, help="Number of words in hist (default 10).")
 parser.add_argument('--min_length','-ml', type=int, default=0, help="Min length of words (default 0).")
 args = parser.parse_args()
 
-for idx in tqdm.tqdm(range(len(args.file))):
-    word_dict, words = load_file(args.file[idx])
+for file_name in args.file:
+    word_dict, words = load_file(file_name)
     most_common = count_words(word_dict, words)
-    create_hist(most_common)
+    create_hist(most_common, file_name)
+
 
 rich.get_console().print("[bold magenta]The endzik[/bold magenta]!", style="italic red")

@@ -1,0 +1,2 @@
+poetry run python project001/project001.py 
+poetry run python project001.py -f alicja_eng.txt alicja_pl.txt -m 7 -ml 3

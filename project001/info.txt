@@ -1,1 +1,0 @@
-poetry run python project001/project001.py 
