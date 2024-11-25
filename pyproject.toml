@@ -12,8 +12,10 @@ rich = "^13.9.2"
 argparse = "^1.4.0"
 tqdm = "^4.66.5"
 ascii_graph = "^1.5.1"
-numpy = "^2.1.2"
+numpy = "2.0"
 pillow = "^11.0.0"
+numba = "^0.60.0"
+bs4 = "^0.0.2"
 
 
 [build-system]
