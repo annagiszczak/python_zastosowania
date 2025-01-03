@@ -9,6 +9,12 @@ from ascii_graph.colors import *
 from ascii_graph.colordata import vcolor
 from ascii_graph.colordata import hcolor
 
+'''
+Mierzenie wykonania programu
+'''
+import time
+start_time = time.time()
+
 import numpy as np
 from PIL import Image
 
@@ -109,3 +115,7 @@ args = parser.parse_args()
 ising = IsingModel(args)
 ising.simulate()
 rich.get_console().rule(":raccoon: :raccoon: :raccoon: DONE! :raccoon: :raccoon: :raccoon:", style="bold magenta")
+end_time = time.time()
+
+elapsed_time = end_time - start_time
+print(f"Czas wykonania: {elapsed_time:.6f} sekund")

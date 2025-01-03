@@ -7,10 +7,18 @@ from rich.progress import track
 from ascii_graph.colors import *
 from ascii_graph.colordata import vcolor
 from ascii_graph.colordata import hcolor
+
+''' 
+Mierzenie wykonania programu
+# '''
+import time
+start_time = time.time()
+
 import rich
 import rich.traceback
 import numba
 from numba import types, typed
+
 
 import collections
 from _collections_abc import Iterable 
@@ -20,8 +28,10 @@ rich.traceback.install()
 rich.get_console().clear()
 rich.get_console().rule(":raccoon: :raccoon: :raccoon: ISING :raccoon: :raccoon: :raccoon:", style="bold magenta")
 
+
 def initialize_grid(n, spin_density):
     return np.random.choice([-1, 1], size=(n, n), p=[1 - spin_density, spin_density])
+
 
 @njit
 def energy_change(grid, i, j, J, B, n):
@@ -41,7 +51,7 @@ def monte_carlo_step(grid, n, beta, J, B):
         if dE < 0 or np.random.rand() < np.exp(-beta * dE):
             grid[i, j] *= -1
     return grid
-@njit
+
 def save_image(grid, n, step, image_prefix):
     image = Image.new('RGB', (n, n), 'pink')
     draw = ImageDraw.Draw(image)
@@ -52,6 +62,15 @@ def save_image(grid, n, step, image_prefix):
     image = image.resize((n * 100, n * 100), Image.NEAREST)
     image.save(f"{image_prefix}_{step}.png")
     return image
+
+@njit
+def mag_return(grid, n):
+    return np.sum(grid) / (n * n)
+
+def write_magnetization(magnetization, magnetization_file):
+    with open(magnetization_file, 'w') as f:
+        for step, m in enumerate(magnetization):
+            f.write(f"{step}\t{m}\n")
 
 def simulate(args):
     n = args.number
@@ -70,7 +89,8 @@ def simulate(args):
 
     for step in track(range(steps), description="Running Monte Carlo simulation"):
         grid = monte_carlo_step(grid, n, beta, J, B)
-        mag = np.sum(grid) / (n * n)
+        # mag = np.sum(grid) / (n * n)
+        mag = mag_return(grid, n)
         magnetization.append(mag)
 
         if image_prefix:
@@ -87,9 +107,10 @@ def simulate(args):
         )
 
     if magnetization_file:
-        with open(magnetization_file, 'w') as f:
-            for step, m in enumerate(magnetization):
-                f.write(f"{step}\t{m}\n")
+        write_magnetization(magnetization, magnetization_file)
+        # with open(magnetization_file, 'w') as f:
+        #     for step, m in enumerate(magnetization):
+        #         f.write(f"{step}\t{m}\n")
 
 parser = argparse.ArgumentParser(description="Analysis of words number")
 parser.add_argument('--number', '-n', type=int, default=10, help="Size of net  (default 10).", required=True)
@@ -104,3 +125,9 @@ parser.add_argument('--magnetization_file', '-mf', type=str, default='magnet.txt
 
 args = parser.parse_args()
 simulate(args)
+rich.get_console().rule(":raccoon: :raccoon: :raccoon: DONE! :raccoon: :raccoon: :raccoon:", style="bold magenta")
+
+end_time = time.time()
+
+elapsed_time = end_time - start_time
+print(f"Czas wykonania: {elapsed_time:.6f} sekund")

@@ -1,0 +1,1 @@
+poetry run python project006_chromium.py wp_tech_articles_after_scrolling.json

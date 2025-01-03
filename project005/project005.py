@@ -16,7 +16,7 @@ if table:
 
     for row in rows[1:]:
         columns = row.find_all('td')
-        print(len(columns))
+        # print(len(columns))
         expedition_data = {
             "Wyprawa": columns[0].get_text(strip=True),
             "Daty": columns[1].get_text(strip=True),
@@ -26,7 +26,7 @@ if table:
         }
         expeditions.append(expedition_data)
 
-# print(json.dumps(expeditions, ensure_ascii=False, indent=4))
+print(json.dumps(expeditions, ensure_ascii=False, indent=4))
 
 with open('expeditions.json', 'w') as file:
     json.dump(expeditions, file, indent=4)
